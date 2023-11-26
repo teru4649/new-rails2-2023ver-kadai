@@ -3,12 +3,16 @@ Rails.application.routes.draw do
      :sessions => 'admins/sessions'
    }
  
-   devise_scope :admin do
-     get "dashboard", :to => "dashboard#index"
-     get "dashboard/login", :to => "admins/sessions#new"
-     post "dashboard/login", :to => "admins/sessions#create"
-     delete "dashboard/logout", :to => "admins/sessions#destroy"
-   end
+  devise_scope :admin do
+    get "dashboard", :to => "dashboard#index"
+    get "dashboard/login", :to => "admins/sessions#new"
+    post "dashboard/login", :to => "admins/sessions#create"
+    delete "dashboard/logout", :to => "admins/sessions#destroy"
+  end
+
+  namespace :dashboard do
+    resources :categories, except: [:new]
+  end
   
   devise_for :users, :controllers => {
     :registrations => 'users/registrations',
