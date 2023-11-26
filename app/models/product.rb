@@ -18,6 +18,11 @@ class Product < ApplicationRecord
      display_list(page)
    }
 
+   scope :search_for_id_and_name, -> (keyword) {
+     where("name LIKE ?", "%#{keyword}%").
+     or(where("id LIKE ?", "%#{keyword}%"))
+   }  
+
   scope :sort_list, -> { 
      {
        "並び替え" => "", 
