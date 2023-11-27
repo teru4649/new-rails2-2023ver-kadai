@@ -41,6 +41,8 @@ GEM
       activemodel (= 5.2.5)
       activesupport (= 5.2.5)
       arel (>= 9.0)
+    activerecord-import (1.5.1)
+      activerecord (>= 4.2)
     activestorage (5.2.5)
       actionpack (= 5.2.5)
       activerecord (= 5.2.5)
@@ -281,6 +283,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activerecord-import
   acts_as_shopping_cart
   bootsnap (>= 1.1.0)
   bootstrap (~> 4.6.0)
