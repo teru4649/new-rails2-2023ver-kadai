@@ -22,7 +22,7 @@
               <td><%= order.updated_at.to_datetime.strftime("%Y-%m-%d %H:%M:%S") %></td>
               <td><%= order.total.fractional / 100 %></td>
               <td>
-                <%= link_to "#{ order.id }", mypage_cart_histories_users_path(order) %>
+                <%= link_to "#{ order.id }", mypage_cart_history_users_path(order) %>
               </td>
             </tr>
             <% end %>

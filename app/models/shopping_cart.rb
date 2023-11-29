@@ -20,69 +20,71 @@ scope :sort_list, -> {
   {"日別": "daily", "月別": "month"}
 }
 
-CARRIAGE=800
-FREE_SHIPPING=0
+  CARRIAGE=800
+  FREE_SHIPPING=0
 
-def self.get_monthly_sales
-  if Rails.env.production?
-    months = bought_months_postgres
-  else
-    months = bought_months_postgres
-  end
-  
-  array = Array.new(months.count) { Hash.new }
-  
-  months.each_with_index do |month, i|
-    monthly_sales = search_bought_carts_by_month(month)
-    total = 0
-    
-    monthly_sales.each do |monthly_sale|
-      total += monthly_sale.total.fractional / 100
-    end   
-    
-    array[i][:period] = month.strftime("%Y-%m")
-    array[i][:total] = total
-    array[i][:count] = monthly_sales.count
-    array[i][:average] = total / monthly_sales.count
-  end
-  
-  return array
-end
-
-def self.get_daily_sales
-  if Rails.env.production?
-    days = bought_days_postgres
-  else
-    days = bought_days_postgres
-  end    
-  
-  array = Array.new(days.count) { Hash.new }
-  
-  days.each_with_index do |day, i|
-    daily_sales = search_bought_carts_by_day(day)
-    total = 0
-    
-    daily_sales.each do |daily_sale|
-      total += daily_sale.total.fractional / 100
+  def self.get_monthly_sales
+    if Rails.env.production?
+      months = bought_months_postgres
+    else
+      months = bought_months_postgres
     end
     
-    array[i][:period] = day.strftime("%Y-%m-%d")
-    array[i][:total] = total
-    array[i][:count] = daily_sales.count
-    array[i][:average] = total / daily_sales.count
+    array = Array.new(months.count) { Hash.new }
+    
+    months.each_with_index do |month, i|
+      monthly_sales = search_bought_carts_by_month(month)
+      total = 0
+      
+      monthly_sales.each do |monthly_sale|
+        total += monthly_sale.total.fractional / 100
+      end   
+      
+      array[i][:period] = month.strftime("%Y-%m")
+      array[i][:total] = total
+      array[i][:count] = monthly_sales.count
+      array[i][:average] = total / monthly_sales.count
+    end
+    
+    return array
   end
-  
-  return array
-end
+
+  def self.get_daily_sales
+    if Rails.env.production?
+      days = bought_days_postgres
+    else
+      days = bought_days_postgres
+    end    
+    
+    array = Array.new(days.count) { Hash.new }
+    
+    days.each_with_index do |day, i|
+      daily_sales = search_bought_carts_by_day(day)
+      total = 0
+      
+      daily_sales.each do |daily_sale|
+        total += daily_sale.total.fractional / 100
+      end
+      
+      array[i][:period] = day.strftime("%Y-%m-%d")
+      array[i][:total] = total
+      array[i][:count] = daily_sales.count
+      array[i][:average] = total / daily_sales.count
+    end
+    
+    return array
+  end
 
   def tax_pct
     0
   end
-end
 
-def shipping_cost
-  product_ids = ShoppingCartItem.user_cart_item_ids(self.id)
-  products_carriage_list = Product.check_products_carriage_list(product_ids)
-  products_carriage_list.include?(true) ? Money.new(CARRIAGE * 100)
-                                        : Money.new(FREE_SHIPPING)
+
+  def shipping_cost
+    product_ids = ShoppingCartItem.user_cart_item_ids(self.id)
+    products_carriage_list = Product.check_products_carriage_list(product_ids)
+    products_carriage_list.include?(true) ? Money.new(CARRIAGE * 100)
+                                          : Money.new(FREE_SHIPPING)
+  end
+
 end
